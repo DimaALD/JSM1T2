@@ -1,48 +1,47 @@
 const fs = require('fs')
 const json = require('./3.json')
+
+let log = ''
+let numOfWrongProperties = 0
+
 function checkProperties() {
-  let array = []
-  let result = true;
-  if (typeof json.flag !== 'boolean') {
-    array.push("flag : " + json.flag); result = false
-  }
-  if (!Array.isArray(json.myPromises)) {
-    array.push("myPromises : " + json.myPromises); result = false
-  }
-  if (typeof json.element !== 'object') {
-    array.push("element : " + json.element); result = false
-  }
-  if (json.screenshot !== null) {
-    array.push("screenshot : " + json.screenshot); result = false
-  }
-  if (typeof json.elementText !== 'string') {
-    array.push("elementText : " + json.elementText); result = false
-  }
-  if (!json.allElementsText.toString().includes('const')) {
-    array.push("allElementsText : " + json.allElementsText); result = false
-  }
-  if (json.counter < 10) {
-    array.push("counter : " + json.counter); result = false
-  }
-  if (json.config !== 'Common') {
-    array.push("config : " + json.config); result = false
-  }
-  if (!/FiRst/i.test(json.const)) {
-    array.push("const : " + json.const); result = false
-  }
-  if (json.parameters.length !== 8) {
-    array.push("parameters : " + json.parameters); result = false
-  }
-  if (typeof json.description !== 'string' || !(json.description.length > 5 && json.description.length < 13)) {
-    array.push("description : " + json.description); result = false
-  }
-  if (result === true) { return 'Ok' } else { return array }
+    if (typeof json.flag !== 'boolean') fillLogFile("flag", json.flag)
+
+    if (!Array.isArray(json.myPromises)) fillLogFile("myPromises", json.myPromises)
+
+    if (json.screenshot !== null) fillLogFile("screenshot", json.screenshot)
+
+    if (typeof json.element !== 'object') fillLogFile("element", json.element)
+
+    if (typeof json.elementText !== 'string') fillLogFile("elementText", json.elementText)
+
+    if (!json.allElementsText.toString().includes('const')) fillLogFile("allElementsText", json.allElementsText)
+
+    if (json.counter < 10) fillLogFile("counter", json.counter)
+
+    if (!/FiRst/i.test(json.const)) fillLogFile("const", json.const)
+
+    if (json.parameters.length !== 8) fillLogFile("parametres", json.parameters)
+
+    if (typeof json.description !== 'string' || !(json.description.length > 5 && json.description.length < 13))
+        fillLogFile("description", json.description)
+
+    if (numOfWrongProperties != 0) {
+        fs.writeFile('LOG.txt', log, 'utf8', () => {
+            console.log('LOG.txt file was created. Num of wrong properties = ' + numOfWrongProperties)
+        })
+    } else {
+        console.log('OK')
+    }
+
 }
-function printInFile(path, result) {
-  let text = result.join('\r\n')
-  fs.writeFile(path, text, (err) => {
-    if (err) { console.log(err.message) }
-  })
+
+function fillLogFile(property, value) {
+    log = log.concat(property + " : " + value + '\r\n')
+    numOfWrongProperties++
 }
-printInFile('task2.txt', checkProperties())
+checkProperties()
+
+
+
 
