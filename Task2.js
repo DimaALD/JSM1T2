@@ -1,7 +1,7 @@
 const fs = require('fs')
 const json = require('./3.json')
 
-let log = ''
+let log = {}
 let numOfWrongProperties = 0
 
 function checkProperties() {
@@ -27,21 +27,19 @@ function checkProperties() {
         fillLogFile("description", json.description)
 
     if (numOfWrongProperties != 0) {
-        fs.writeFile('LOG.txt', log, 'utf8', () => {
-            console.log('LOG.txt file was created. Num of wrong properties = ' + numOfWrongProperties)
+        fs.writeFile('LOG.json', JSON.stringify(log), 'utf8', () => {
+            console.log('LOG.json file was created. Num of wrong properties = ' + numOfWrongProperties)
         })
     } else {
         console.log('OK')
     }
-
 }
 
 function fillLogFile(property, value) {
-    log = log.concat(property + " : " + value + '\r\n')
+    log[property] = value
     numOfWrongProperties++
 }
 checkProperties()
-
 
 
 
